@@ -3280,6 +3280,7 @@ dependencies = [
  "colored",
  "num-format",
  "prettytable-rs",
+ "solana-account-decoder",
  "solana-client",
  "solana-sdk",
  "solana-transaction-status",
