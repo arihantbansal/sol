@@ -3284,6 +3284,7 @@ dependencies = [
  "solana-client",
  "solana-sdk",
  "solana-transaction-status",
+ "spl-token",
  "terminal_size",
  "tokio",
 ]
