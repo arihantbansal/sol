@@ -1,7 +1,10 @@
 use crate::{utils::get_network, Account};
 
 use prettytable::{row, Table};
-use solana_account_decoder::{parse_account_data::parse_account_data, UiAccountEncoding};
+use solana_account_decoder::{
+    parse_account_data::{parse_account_data, ParsedAccount as ParsedAccountData},
+    UiAccountEncoding,
+};
 use solana_client::{
     nonblocking::rpc_client::RpcClient as Client, rpc_config::RpcAccountInfoConfig,
 };
@@ -48,13 +51,14 @@ async fn parse_account(
         rent_epoch,
     } = account;
 
-    if data.len() != 0 {
-        let parsed_data = parse_account_data(pubkey, &owner, &data, None).unwrap();
-        println!("{:?}", parsed_data);
+    let parsed_data = if data.len() != 0 {
+        let unwrapped_data = parse_account_data(pubkey, &owner, &data, None).unwrap();
+        Some(unwrapped_data)
     } else {
         // TODO
         // user data
-    }
+        None
+    };
 
     let name = match owner {
         system_program::ID => Some("System Program".to_string()),
@@ -68,7 +72,7 @@ async fn parse_account(
             pubkey: owner,
         },
         lamports,
-        data,
+        parsed_data,
         executable,
     })
 }
@@ -81,7 +85,7 @@ pub struct Owner {
 pub struct ParsedAccount {
     owner: Owner,
     lamports: u64,
-    data: Vec<u8>,
+    parsed_data: Option<ParsedAccountData>,
     executable: bool,
 }
 
